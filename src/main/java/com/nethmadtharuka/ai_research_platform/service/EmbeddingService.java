@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Duration;
 import java.util.List;
@@ -38,20 +39,32 @@ public class EmbeddingService {
         EmbeddingRequest request = EmbeddingRequest.fromText(text);
 
         try {
+            log.debug("Calling Gemini API: {}", embeddingUrl);
+
             EmbeddingResponse response = webClient.post()
                     .uri(embeddingUrl + "?key=" + apiKey)
                     .header("Content-Type", "application/json")
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(EmbeddingResponse.class)
-                    .block(Duration.ofSeconds(30));
+                    .timeout(Duration.ofSeconds(60))  // Increased timeout
+                    .block();
 
-            List<Double> values = response != null ? response.getValues() : List.of();
+            if (response == null || response.getValues() == null) {
+                log.error("Received null response from Gemini API");
+                throw new RuntimeException("Null response from embedding service");
+            }
+
+            List<Double> values = response.getValues();
             log.debug("Generated embedding with {} dimensions", values.size());
             return values;
 
+        } catch (WebClientResponseException e) {
+            log.error("Gemini API error: Status={}, Body={}",
+                    e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("Gemini API error: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Error generating embedding: {}", e.getMessage());
+            log.error("Error generating embedding: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to generate embedding: " + e.getMessage(), e);
         }
     }

@@ -1,12 +1,17 @@
 package com.nethmadtharuka.ai_research_platform.controller;
 
 import com.nethmadtharuka.ai_research_platform.model.entity.Document;
+import com.nethmadtharuka.ai_research_platform.service.ChunkingService;
 import com.nethmadtharuka.ai_research_platform.service.RAGService;
 import com.nethmadtharuka.ai_research_platform.service.VectorStoreService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +22,13 @@ public class DocumentController {
 
     private final VectorStoreService vectorStoreService;
     private final RAGService ragService;
+    private final ChunkingService chunkingService;
 
     /**
-     * Add a new document to the knowledge base
+     * Add a document from text
      */
     @PostMapping
-    public ResponseEntity<Document> addDocument(@RequestBody Map<String, String> request) {
+    public ResponseEntity<List<Document>> addDocument(@RequestBody Map<String, String> request) {
         String title = request.get("title");
         String content = request.get("content");
         String source = request.getOrDefault("source", "manual");
@@ -31,20 +37,35 @@ public class DocumentController {
             return ResponseEntity.badRequest().build();
         }
 
-        Document doc = vectorStoreService.addDocument(title, content, source);
-        return ResponseEntity.ok(doc);
+        List<Document> docs = vectorStoreService.addDocument(title, content, source);
+        return ResponseEntity.ok(docs);
     }
 
     /**
-     * Get all documents
+     * Upload a file (TXT)
      */
-    @GetMapping
-    public ResponseEntity<List<Document>> getAllDocuments() {
-        return ResponseEntity.ok(vectorStoreService.getAllDocuments());
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String filename = file.getOriginalFilename();
+            String content = IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
+
+            List<Document> docs = vectorStoreService.addDocument(filename, content, "file_upload");
+
+            return ResponseEntity.ok(Map.of(
+                    "message", "File uploaded successfully",
+                    "filename", filename,
+                    "chunks_created", docs.size(),
+                    "documents", docs
+            ));
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Failed to read file: " + e.getMessage()));
+        }
     }
 
     /**
-     * Search documents semantically
+     * Search documents
      */
     @GetMapping("/search")
     public ResponseEntity<List<Document>> searchDocuments(
@@ -66,19 +87,23 @@ public class DocumentController {
     }
 
     /**
-     * Get document count
+     * Get collection stats
      */
-    @GetMapping("/count")
-    public ResponseEntity<Map<String, Integer>> getDocumentCount() {
-        return ResponseEntity.ok(Map.of("count", vectorStoreService.getDocumentCount()));
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getStats() {
+        return ResponseEntity.ok(vectorStoreService.getStats());
     }
 
     /**
-     * Delete a document
+     * Get chunking metadata for text
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteDocument(@PathVariable String id) {
-        boolean deleted = vectorStoreService.deleteDocument(id);
-        return ResponseEntity.ok(Map.of("deleted", deleted));
+    @PostMapping("/chunking-preview")
+    public ResponseEntity<ChunkingService.ChunkingMetadata> previewChunking(
+            @RequestBody Map<String, String> request) {
+        String content = request.get("content");
+        if (content == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(chunkingService.getChunkingMetadata(content));
     }
 }
