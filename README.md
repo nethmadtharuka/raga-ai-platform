@@ -4,7 +4,6 @@ A production-grade RAG (Retrieval Augmented Generation) system with vector searc
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-green)
-![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## 🌟 Features
 
@@ -76,6 +75,8 @@ POST	/api/webhooks/ask	Ask a question (RAG)
 POST	/api/webhooks/research	Research a topic
 GET	/api/health	Health check
 GET	/api/health/metrics	System metrics
+
+
 🧪 Running Tests
 mvn test
 
@@ -127,10 +128,6 @@ Architecture Overview
 API Documentation
 
 n8n Workflows
-
-📄 License
-
-MIT License
 
 👨‍💻 Author
 
