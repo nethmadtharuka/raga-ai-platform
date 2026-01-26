@@ -22,11 +22,14 @@ public class ChunkingService {
      * Strategy: Sentence-based chunking with overlap
      */
     public List<String> chunkText(String text) {
-        log.debug("Chunking text of length: {}", text.length());
 
         if (text == null || text.isBlank()) {
+            log.debug("Empty or null text provided for chunking");
             return List.of();
         }
+
+        log.debug("Chunking text of length: {}", text.length());
+
 
         // Clean the text
         text = text.trim().replaceAll("\\s+", " ");

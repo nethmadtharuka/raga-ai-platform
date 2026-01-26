@@ -51,3 +51,160 @@
 2026-01-26T13:54:00.759+05:30  INFO 31244 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-01-26T13:54:00.762+05:30  INFO 31244 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-01-26T13:54:00.764+05:30  INFO 31244 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-26T18:39:31.251+05:30  INFO 22292 --- [main] c.n.a.AiResearchPlatformApplication      : Starting AiResearchPlatformApplication using Java 17.0.16 with PID 22292 (E:\Projects\RAGA\ai-research-platform\ai-research-platform\target\classes started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T18:39:31.259+05:30  INFO 22292 --- [main] c.n.a.AiResearchPlatformApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T18:39:32.386+05:30  INFO 22292 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-26T18:39:32.411+05:30  INFO 22292 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 0 JPA repository interfaces.
+2026-01-26T18:39:33.230+05:30  INFO 22292 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-01-26T18:39:33.259+05:30  INFO 22292 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-26T18:39:33.259+05:30  INFO 22292 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-01-26T18:39:33.345+05:30  INFO 22292 --- [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1998 ms
+2026-01-26T18:39:33.567+05:30  INFO 22292 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-26T18:39:33.876+05:30  INFO 22292 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:5398d771-bfc8-4b35-bc9b-bb43d756f220 user=SA
+2026-01-26T18:39:33.879+05:30  INFO 22292 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-26T18:39:33.941+05:30  INFO 22292 --- [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-01-26T18:39:34.067+05:30  INFO 22292 --- [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-01-26T18:39:34.786+05:30  INFO 22292 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-26T18:39:34.865+05:30  INFO 22292 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:5398d771-bfc8-4b35-bc9b-bb43d756f220]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 5398D771-BFC8-4B35-BC9B-BB43D756F220/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-26T18:39:35.325+05:30  INFO 22292 --- [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-26T18:39:35.332+05:30  INFO 22292 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T18:39:35.615+05:30  INFO 22292 --- [main] c.n.a.service.ChromaDBService            : ChromaDB Service initialized with URL: http://localhost:8000, Tenant: default_tenant, Database: default_database, Collection: research_documents
+2026-01-26T18:39:35.738+05:30  WARN 22292 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-26T18:39:36.243+05:30  INFO 22292 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-01-26T18:39:36.254+05:30  INFO 22292 --- [main] c.n.a.AiResearchPlatformApplication      : Started AiResearchPlatformApplication in 5.5 seconds (process running for 18.7)
+2026-01-26T18:40:00.064+05:30  INFO 22292 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-26T18:40:00.148+05:30  INFO 22292 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Initializing collection: research_documents
+2026-01-26T18:40:00.238+05:30 DEBUG 22292 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [18f8f42a] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections
+2026-01-26T18:40:00.741+05:30 DEBUG 22292 --- [reactor-http-nio-2] o.s.w.r.f.client.ExchangeFunctions       : [18f8f42a] [da35deb1-1] Response 200 OK
+2026-01-26T18:40:00.788+05:30  INFO 22292 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Found existing collection 'research_documents' with ID: 8134f22b-c809-4f78-a8b4-809283f82ff9
+2026-01-26T18:40:00.789+05:30 DEBUG 22292 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [2f448a3c] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/8134f22b-c809-4f78-a8b4-809283f82ff9/count
+2026-01-26T18:40:00.812+05:30 DEBUG 22292 --- [reactor-http-nio-3] o.s.w.r.f.client.ExchangeFunctions       : [2f448a3c] [b69f1042-1] Response 200 OK
+2026-01-26T18:40:00.818+05:30 ERROR 22292 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Error getting stats: JSON decoding error: Cannot deserialize value of type `java.util.LinkedHashMap<java.lang.Object,java.lang.Object>` from Integer value (token `JsonToken.VALUE_NUMBER_INT`)
+2026-01-26T18:40:00.819+05:30 DEBUG 22292 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [7b8f65bc] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/8134f22b-c809-4f78-a8b4-809283f82ff9/count
+2026-01-26T18:40:00.825+05:30 DEBUG 22292 --- [reactor-http-nio-2] o.s.w.r.f.client.ExchangeFunctions       : [7b8f65bc] [da35deb1-2] Response 200 OK
+2026-01-26T18:40:00.827+05:30 ERROR 22292 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Error getting stats: JSON decoding error: Cannot deserialize value of type `java.util.LinkedHashMap<java.lang.Object,java.lang.Object>` from Integer value (token `JsonToken.VALUE_NUMBER_INT`)
+2026-01-26T18:40:09.304+05:30 DEBUG 22292 --- [http-nio-8080-exec-2] o.s.w.r.f.client.ExchangeFunctions       : [1afc2d01] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/8134f22b-c809-4f78-a8b4-809283f82ff9/count
+2026-01-26T18:40:09.320+05:30 DEBUG 22292 --- [reactor-http-nio-3] o.s.w.r.f.client.ExchangeFunctions       : [1afc2d01] [b69f1042-2] Response 200 OK
+2026-01-26T18:40:09.321+05:30 ERROR 22292 --- [http-nio-8080-exec-2] c.n.a.service.ChromaDBService            : Error getting stats: JSON decoding error: Cannot deserialize value of type `java.util.LinkedHashMap<java.lang.Object,java.lang.Object>` from Integer value (token `JsonToken.VALUE_NUMBER_INT`)
+2026-01-26T21:48:03.670+05:30  WARN 22292 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h4m58s660ms211µs500ns).
+2026-01-26T22:37:03.620+05:30  INFO 22492 --- [main] c.n.a.AiResearchPlatformApplicationTests : Starting AiResearchPlatformApplicationTests using Java 17.0.16 with PID 22492 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T22:37:03.623+05:30  INFO 22492 --- [main] c.n.a.AiResearchPlatformApplicationTests : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T22:37:04.940+05:30  INFO 22492 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-26T22:37:04.997+05:30  INFO 22492 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 30 ms. Found 0 JPA repository interfaces.
+2026-01-26T22:37:05.927+05:30  INFO 22492 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-26T22:37:06.353+05:30  INFO 22492 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:1a684a3d-55b4-47b6-95d2-6ef140cc7960 user=SA
+2026-01-26T22:37:06.357+05:30  INFO 22492 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-26T22:37:06.446+05:30  INFO 22492 --- [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-01-26T22:37:06.698+05:30  INFO 22492 --- [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-01-26T22:37:07.542+05:30  INFO 22492 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-26T22:37:07.668+05:30  INFO 22492 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:1a684a3d-55b4-47b6-95d2-6ef140cc7960]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 1A684A3D-55B4-47B6-95D2-6EF140CC7960/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-26T22:37:08.226+05:30  INFO 22492 --- [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-26T22:37:08.232+05:30  INFO 22492 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T22:37:08.516+05:30  INFO 22492 --- [main] c.n.a.service.ChromaDBService            : ChromaDB Service initialized with URL: http://localhost:8000, Tenant: default_tenant, Database: default_database, Collection: research_documents
+2026-01-26T22:37:08.874+05:30  WARN 22492 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-26T22:37:10.077+05:30  INFO 22492 --- [main] c.n.a.AiResearchPlatformApplicationTests : Started AiResearchPlatformApplicationTests in 6.919 seconds (process running for 9.084)
+2026-01-26T22:37:10.963+05:30  INFO 22492 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.nethmadtharuka.ai_research_platform.controller.HealthControllerTest]: HealthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-26T22:37:11.031+05:30  INFO 22492 --- [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.nethmadtharuka.ai_research_platform.AiResearchPlatformApplication for test class com.nethmadtharuka.ai_research_platform.controller.HealthControllerTest
+2026-01-26T22:37:11.091+05:30  INFO 22492 --- [main] c.n.a.controller.HealthControllerTest    : Starting HealthControllerTest using Java 17.0.16 with PID 22492 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T22:37:11.092+05:30  INFO 22492 --- [main] c.n.a.controller.HealthControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T22:37:12.247+05:30  INFO 22492 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-26T22:37:12.248+05:30  INFO 22492 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-26T22:37:12.254+05:30  INFO 22492 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 6 ms
+2026-01-26T22:37:12.304+05:30  INFO 22492 --- [main] c.n.a.controller.HealthControllerTest    : Started HealthControllerTest in 1.268 seconds (process running for 11.311)
+2026-01-26T22:37:13.019+05:30  INFO 22492 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.nethmadtharuka.ai_research_platform.controller.WebhookControllerTest]: WebhookControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-26T22:37:13.040+05:30  INFO 22492 --- [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.nethmadtharuka.ai_research_platform.AiResearchPlatformApplication for test class com.nethmadtharuka.ai_research_platform.controller.WebhookControllerTest
+2026-01-26T22:37:13.122+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookControllerTest   : Starting WebhookControllerTest using Java 17.0.16 with PID 22492 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T22:37:13.122+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T22:37:13.660+05:30  INFO 22492 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-26T22:37:13.660+05:30  INFO 22492 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-26T22:37:13.663+05:30  INFO 22492 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-01-26T22:37:13.675+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookControllerTest   : Started WebhookControllerTest in 0.623 seconds (process running for 12.682)
+2026-01-26T22:37:13.733+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookController       : Question via webhook
+2026-01-26T22:37:13.809+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T22:37:13.815+05:30 ERROR 22492 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Content is required and cannot be empty
+2026-01-26T22:37:13.836+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T22:37:13.862+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookController       : Question via webhook
+2026-01-26T22:37:13.863+05:30 ERROR 22492 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Question is required
+2026-01-26T22:37:13.882+05:30  INFO 22492 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T22:37:13.883+05:30 ERROR 22492 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Title is required and cannot be empty
+2026-01-26T22:37:13.912+05:30  INFO 22492 --- [main] c.n.a.service.ChunkingService            : Split text into 3 chunks
+2026-01-26T22:37:14.077+05:30  INFO 22492 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T22:37:14.086+05:30  INFO 22492 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-26T22:37:14.091+05:30  INFO 22492 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-01-26T23:12:07.894+05:30  INFO 25872 --- [main] c.n.a.AiResearchPlatformApplicationTests : Starting AiResearchPlatformApplicationTests using Java 17.0.16 with PID 25872 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T23:12:07.896+05:30  INFO 25872 --- [main] c.n.a.AiResearchPlatformApplicationTests : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T23:12:08.848+05:30  INFO 25872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-26T23:12:08.905+05:30  INFO 25872 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 36 ms. Found 0 JPA repository interfaces.
+2026-01-26T23:12:09.552+05:30  INFO 25872 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-26T23:12:09.752+05:30  INFO 25872 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:6b49ca59-5410-473c-9570-7671ea95d80a user=SA
+2026-01-26T23:12:09.759+05:30  INFO 25872 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-26T23:12:09.830+05:30  INFO 25872 --- [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-01-26T23:12:09.974+05:30  INFO 25872 --- [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-01-26T23:12:11.019+05:30  INFO 25872 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-26T23:12:11.135+05:30  INFO 25872 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:6b49ca59-5410-473c-9570-7671ea95d80a]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 6B49CA59-5410-473C-9570-7671EA95D80A/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-26T23:12:11.761+05:30  INFO 25872 --- [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-26T23:12:11.773+05:30  INFO 25872 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T23:12:12.040+05:30  INFO 25872 --- [main] c.n.a.service.ChromaDBService            : ChromaDB Service initialized with URL: http://localhost:8000, Tenant: default_tenant, Database: default_database, Collection: research_documents
+2026-01-26T23:12:12.314+05:30  WARN 25872 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-26T23:12:13.083+05:30  INFO 25872 --- [main] c.n.a.AiResearchPlatformApplicationTests : Started AiResearchPlatformApplicationTests in 5.51 seconds (process running for 6.907)
+2026-01-26T23:12:13.772+05:30  INFO 25872 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.nethmadtharuka.ai_research_platform.controller.HealthControllerTest]: HealthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-26T23:12:13.834+05:30  INFO 25872 --- [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.nethmadtharuka.ai_research_platform.AiResearchPlatformApplication for test class com.nethmadtharuka.ai_research_platform.controller.HealthControllerTest
+2026-01-26T23:12:13.893+05:30  INFO 25872 --- [main] c.n.a.controller.HealthControllerTest    : Starting HealthControllerTest using Java 17.0.16 with PID 25872 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T23:12:13.894+05:30  INFO 25872 --- [main] c.n.a.controller.HealthControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T23:12:14.630+05:30  INFO 25872 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-26T23:12:14.631+05:30  INFO 25872 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-26T23:12:14.634+05:30  INFO 25872 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-01-26T23:12:14.675+05:30  INFO 25872 --- [main] c.n.a.controller.HealthControllerTest    : Started HealthControllerTest in 0.833 seconds (process running for 8.499)
+2026-01-26T23:12:15.228+05:30  INFO 25872 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.nethmadtharuka.ai_research_platform.controller.WebhookControllerTest]: WebhookControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-26T23:12:15.254+05:30  INFO 25872 --- [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.nethmadtharuka.ai_research_platform.AiResearchPlatformApplication for test class com.nethmadtharuka.ai_research_platform.controller.WebhookControllerTest
+2026-01-26T23:12:15.314+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookControllerTest   : Starting WebhookControllerTest using Java 17.0.16 with PID 25872 (started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T23:12:15.315+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T23:12:15.770+05:30  INFO 25872 --- [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-01-26T23:12:15.771+05:30  INFO 25872 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-01-26T23:12:15.774+05:30  INFO 25872 --- [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-01-26T23:12:15.788+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookControllerTest   : Started WebhookControllerTest in 0.525 seconds (process running for 9.612)
+2026-01-26T23:12:15.845+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookController       : Question via webhook
+2026-01-26T23:12:15.924+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T23:12:15.930+05:30 ERROR 25872 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Content is required and cannot be empty
+2026-01-26T23:12:15.958+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T23:12:15.982+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookController       : Question via webhook
+2026-01-26T23:12:15.984+05:30 ERROR 25872 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Question is required
+2026-01-26T23:12:16.010+05:30  INFO 25872 --- [main] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T23:12:16.012+05:30 ERROR 25872 --- [main] c.n.a.exception.GlobalExceptionHandler   : Validation error: Title is required and cannot be empty
+2026-01-26T23:12:16.048+05:30  INFO 25872 --- [main] c.n.a.service.ChunkingService            : Split text into 3 chunks
+2026-01-26T23:12:16.187+05:30  INFO 25872 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T23:12:16.190+05:30  INFO 25872 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-26T23:12:16.196+05:30  INFO 25872 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
