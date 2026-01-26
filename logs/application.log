@@ -1,0 +1,53 @@
+2026-01-26T13:37:33.116+05:30  INFO 31244 --- [main] c.n.a.AiResearchPlatformApplication      : Starting AiResearchPlatformApplication using Java 17.0.16 with PID 31244 (E:\Projects\RAGA\ai-research-platform\ai-research-platform\target\classes started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-01-26T13:37:33.135+05:30  INFO 31244 --- [main] c.n.a.AiResearchPlatformApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-01-26T13:37:34.690+05:30  INFO 31244 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-26T13:37:34.740+05:30  INFO 31244 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 28 ms. Found 0 JPA repository interfaces.
+2026-01-26T13:37:36.381+05:30  INFO 31244 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-01-26T13:37:36.411+05:30  INFO 31244 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-26T13:37:36.412+05:30  INFO 31244 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-01-26T13:37:36.566+05:30  INFO 31244 --- [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3269 ms
+2026-01-26T13:37:36.894+05:30  INFO 31244 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-26T13:37:37.437+05:30  INFO 31244 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:24a7afee-a5c5-4921-9d0b-4a70f50b98a3 user=SA
+2026-01-26T13:37:37.442+05:30  INFO 31244 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-26T13:37:37.562+05:30  INFO 31244 --- [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-01-26T13:37:37.766+05:30  INFO 31244 --- [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-01-26T13:37:39.107+05:30  INFO 31244 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-26T13:37:39.290+05:30  INFO 31244 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:24a7afee-a5c5-4921-9d0b-4a70f50b98a3]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 24A7AFEE-A5C5-4921-9D0B-4A70F50B98A3/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-01-26T13:37:40.150+05:30  INFO 31244 --- [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-26T13:37:40.161+05:30  INFO 31244 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T13:37:40.563+05:30  INFO 31244 --- [main] c.n.a.service.ChromaDBService            : ChromaDB Service initialized with URL: http://localhost:8000, Tenant: default_tenant, Database: default_database, Collection: research_documents
+2026-01-26T13:37:40.757+05:30  WARN 31244 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-26T13:37:41.539+05:30  INFO 31244 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-01-26T13:37:41.562+05:30  INFO 31244 --- [main] c.n.a.AiResearchPlatformApplication      : Started AiResearchPlatformApplication in 9.368 seconds (process running for 10.453)
+2026-01-26T13:37:49.153+05:30  INFO 31244 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-26T13:37:49.239+05:30  INFO 31244 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Initializing collection: research_documents
+2026-01-26T13:37:49.329+05:30 DEBUG 31244 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [62620944] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections
+2026-01-26T13:37:49.841+05:30 DEBUG 31244 --- [reactor-http-nio-2] o.s.w.r.f.client.ExchangeFunctions       : [62620944] [3f265364-1] Response 200 OK
+2026-01-26T13:37:49.936+05:30  INFO 31244 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Found existing collection 'research_documents' with ID: 8134f22b-c809-4f78-a8b4-809283f82ff9
+2026-01-26T13:37:49.937+05:30 DEBUG 31244 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [362a2849] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/8134f22b-c809-4f78-a8b4-809283f82ff9/count
+2026-01-26T13:37:49.975+05:30 DEBUG 31244 --- [reactor-http-nio-3] o.s.w.r.f.client.ExchangeFunctions       : [362a2849] [ecb9ee5a-1] Response 200 OK
+2026-01-26T13:37:49.984+05:30 ERROR 31244 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Error getting stats: JSON decoding error: Cannot deserialize value of type `java.util.LinkedHashMap<java.lang.Object,java.lang.Object>` from Integer value (token `JsonToken.VALUE_NUMBER_INT`)
+2026-01-26T13:37:49.986+05:30 DEBUG 31244 --- [http-nio-8080-exec-1] o.s.w.r.f.client.ExchangeFunctions       : [51ea3ec7] HTTP GET http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/8134f22b-c809-4f78-a8b4-809283f82ff9/count
+2026-01-26T13:37:49.994+05:30 DEBUG 31244 --- [reactor-http-nio-2] o.s.w.r.f.client.ExchangeFunctions       : [51ea3ec7] [3f265364-2] Response 200 OK
+2026-01-26T13:37:49.996+05:30 ERROR 31244 --- [http-nio-8080-exec-1] c.n.a.service.ChromaDBService            : Error getting stats: JSON decoding error: Cannot deserialize value of type `java.util.LinkedHashMap<java.lang.Object,java.lang.Object>` from Integer value (token `JsonToken.VALUE_NUMBER_INT`)
+2026-01-26T13:38:15.422+05:30  INFO 31244 --- [http-nio-8080-exec-2] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T13:38:15.424+05:30 ERROR 31244 --- [http-nio-8080-exec-2] c.n.a.exception.GlobalExceptionHandler   : Validation error: Title is required and cannot be empty
+2026-01-26T13:38:55.369+05:30  INFO 31244 --- [http-nio-8080-exec-3] c.n.a.controller.WebhookController       : Adding document via webhook
+2026-01-26T13:38:55.370+05:30 ERROR 31244 --- [http-nio-8080-exec-3] c.n.a.exception.GlobalExceptionHandler   : Validation error: Title is required and cannot be empty
+2026-01-26T13:44:02.029+05:30  WARN 31244 --- [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m30s308ms888µs900ns).
+2026-01-26T13:53:58.465+05:30  INFO 31244 --- [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-26T13:53:58.650+05:30  INFO 31244 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-01-26T13:54:00.759+05:30  INFO 31244 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-26T13:54:00.762+05:30  INFO 31244 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-26T13:54:00.764+05:30  INFO 31244 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -14,14 +14,6 @@ public class ResearchController {
 
     private final ResearchService researchService;
 
-    @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> health() {
-        return ResponseEntity.ok(Map.of(
-                "status", "UP",
-                "service", "AI Research Platform",
-                "timestamp", java.time.Instant.now().toString()
-        ));
-    }
 
     @GetMapping("/research/{topic}")
     public ResponseEntity<Map<String, String>> research(@PathVariable String topic) {

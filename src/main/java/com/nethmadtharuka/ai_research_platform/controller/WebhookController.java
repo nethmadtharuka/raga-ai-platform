@@ -8,6 +8,7 @@ import com.nethmadtharuka.ai_research_platform.service.ResearchService;
 import com.nethmadtharuka.ai_research_platform.service.VectorStoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,14 @@ public class WebhookController {
     private final ResearchService researchService;
     private final RAGService ragService;
 
-    /**
-     * Generic webhook endpoint for n8n
-     */
+    private static final int MAX_CONTENT_LENGTH = 100000; // 100KB
+    private static final int MAX_TITLE_LENGTH = 500;
+
     @PostMapping("/n8n")
     public ResponseEntity<WebhookResponse> handleN8nWebhook(@RequestBody WebhookRequest request) {
         log.info("Received n8n webhook: action={}", request.getAction());
+
+        validateWebhookRequest(request);
 
         try {
             Object result = switch (request.getAction()) {
@@ -37,7 +40,7 @@ public class WebhookController {
                 case "research_topic" -> handleResearchTopic(request.getData());
                 case "ask_question" -> handleAskQuestion(request.getData());
                 case "get_stats" -> handleGetStats();
-                default -> Map.of("error", "Unknown action: " + request.getAction());
+                default -> throw new IllegalArgumentException("Unknown action: " + request.getAction());
             };
 
             return ResponseEntity.ok(WebhookResponse.builder()
@@ -47,18 +50,15 @@ public class WebhookController {
                     .build());
 
         } catch (Exception e) {
-            log.error("Error handling webhook: {}", e.getMessage());
-            return ResponseEntity.ok(WebhookResponse.builder()
-                    .success(false)
-                    .message("Error: " + e.getMessage())
-                    .result(null)
-                    .build());
+            log.error("Error handling webhook", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(WebhookResponse.builder()
+                            .success(false)
+                            .message("Error: " + e.getMessage())
+                            .build());
         }
     }
 
-    /**
-     * Specific webhook for adding documents
-     */
     @PostMapping("/add-document")
     public ResponseEntity<WebhookResponse> addDocumentWebhook(@RequestBody Map<String, String> data) {
         log.info("Adding document via webhook");
@@ -67,20 +67,9 @@ public class WebhookController {
         String content = data.get("content");
         String source = data.getOrDefault("source", "n8n_webhook");
 
-        // Validate input
-        if (title == null || title.isBlank()) {
-            return ResponseEntity.badRequest().body(WebhookResponse.builder()
-                    .success(false)
-                    .message("Title is required and cannot be empty")
-                    .build());
-        }
-
-        if (content == null || content.isBlank()) {
-            return ResponseEntity.badRequest().body(WebhookResponse.builder()
-                    .success(false)
-                    .message("Content is required and cannot be empty")
-                    .build());
-        }
+        // Validation
+        validateTitle(title);
+        validateContent(content);
 
         List<Document> docs = vectorStoreService.addDocument(title, content, source);
 
@@ -94,25 +83,15 @@ public class WebhookController {
                 .build());
     }
 
-    /**
-     * Specific webhook for research requests
-     */
     @PostMapping("/research")
     public ResponseEntity<WebhookResponse> researchWebhook(@RequestBody Map<String, String> data) {
         log.info("Research request via webhook");
 
         String topic = data.get("topic");
-
-        if (topic == null || topic.isBlank()) {
-            return ResponseEntity.badRequest().body(WebhookResponse.builder()
-                    .success(false)
-                    .message("Topic is required")
-                    .build());
-        }
+        validateTopic(topic);
 
         String research = researchService.researchTopic(topic);
 
-        // Optionally save to vector store
         if (Boolean.parseBoolean(data.getOrDefault("save", "false"))) {
             vectorStoreService.addDocument(
                     "Research: " + topic,
@@ -128,21 +107,12 @@ public class WebhookController {
                 .build());
     }
 
-    /**
-     * Webhook for RAG queries
-     */
     @PostMapping("/ask")
     public ResponseEntity<WebhookResponse> askWebhook(@RequestBody Map<String, String> data) {
         log.info("Question via webhook");
 
         String question = data.get("question");
-
-        if (question == null || question.isBlank()) {
-            return ResponseEntity.badRequest().body(WebhookResponse.builder()
-                    .success(false)
-                    .message("Question is required")
-                    .build());
-        }
+        validateQuestion(question);
 
         RAGService.RAGResponse response = ragService.query(question);
 
@@ -153,15 +123,60 @@ public class WebhookController {
                 .build());
     }
 
-    // Helper methods
+    // Validation methods
+    private void validateWebhookRequest(WebhookRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+        if (request.getAction() == null || request.getAction().isBlank()) {
+            throw new IllegalArgumentException("Action is required");
+        }
+    }
+
+    private void validateTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title is required and cannot be empty");
+        }
+        if (title.length() > MAX_TITLE_LENGTH) {
+            throw new IllegalArgumentException("Title too long. Maximum length: " + MAX_TITLE_LENGTH);
+        }
+    }
+
+    private void validateContent(String content) {
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException("Content is required and cannot be empty");
+        }
+        if (content.length() > MAX_CONTENT_LENGTH) {
+            throw new IllegalArgumentException("Content too long. Maximum length: " + MAX_CONTENT_LENGTH);
+        }
+    }
+
+    private void validateTopic(String topic) {
+        if (topic == null || topic.isBlank()) {
+            throw new IllegalArgumentException("Topic is required");
+        }
+        if (topic.length() > 200) {
+            throw new IllegalArgumentException("Topic too long. Maximum length: 200");
+        }
+    }
+
+    private void validateQuestion(String question) {
+        if (question == null || question.isBlank()) {
+            throw new IllegalArgumentException("Question is required");
+        }
+        if (question.length() > 1000) {
+            throw new IllegalArgumentException("Question too long. Maximum length: 1000");
+        }
+    }
+
+    // Helper methods (unchanged)
     private Object handleAddDocument(Map<String, Object> data) {
         String title = (String) data.get("title");
         String content = (String) data.get("content");
         String source = (String) data.getOrDefault("source", "n8n");
 
-        if (title == null || content == null || title.isBlank() || content.isBlank()) {
-            throw new IllegalArgumentException("Title and content are required");
-        }
+        validateTitle(title);
+        validateContent(content);
 
         List<Document> docs = vectorStoreService.addDocument(title, content, source);
         return Map.of("chunks_created", docs.size());
@@ -169,17 +184,13 @@ public class WebhookController {
 
     private Object handleResearchTopic(Map<String, Object> data) {
         String topic = (String) data.get("topic");
-        if (topic == null || topic.isBlank()) {
-            throw new IllegalArgumentException("Topic is required");
-        }
+        validateTopic(topic);
         return researchService.researchTopic(topic);
     }
 
     private Object handleAskQuestion(Map<String, Object> data) {
         String question = (String) data.get("question");
-        if (question == null || question.isBlank()) {
-            throw new IllegalArgumentException("Question is required");
-        }
+        validateQuestion(question);
         return ragService.query(question);
     }
 
