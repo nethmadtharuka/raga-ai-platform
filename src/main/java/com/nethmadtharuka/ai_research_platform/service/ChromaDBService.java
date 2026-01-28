@@ -190,6 +190,7 @@ public class ChromaDBService {
         }
     }
 
+    // ✅ FIXED METHOD - This is the corrected version
     public Map<String, Object> getCollectionStats() {
         ensureInitialized();
 
@@ -198,32 +199,33 @@ public class ChromaDBService {
         }
 
         try {
-            // Get collection count
-            Map countResponse = webClient.get()
+            // Get collection count - ChromaDB returns a simple INTEGER, not a Map!
+            Integer count = webClient.get()
                     .uri(getBaseCollectionUrl() + "/" + collectionId + "/count")
                     .retrieve()
-                    .bodyToMono(Map.class)
+                    .bodyToMono(Integer.class)  // ✅ Changed from Map.class to Integer.class
                     .block(Duration.ofSeconds(10));
 
-            // Get collection details
-            Map detailsResponse = webClient.get()
-                    .uri(getBaseCollectionUrl() + "/" + collectionId)
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block(Duration.ofSeconds(10));
+            log.info("Collection count: {}", count);
 
+            // Build the stats response
             Map<String, Object> stats = new HashMap<>();
-            if (countResponse != null) {
-                stats.putAll(countResponse);
-            }
-            if (detailsResponse != null) {
-                stats.put("collection", detailsResponse);
-            }
+            stats.put("totalChunks", count != null ? count : 0);
+            stats.put("totalDocuments", count != null ? (count / 3) : 0); // Rough estimate
+            stats.put("uniqueSources", 0); // Can be enhanced later
+            stats.put("collectionId", collectionId);
+            stats.put("collectionName", collectionName);
 
             return stats;
+
         } catch (Exception e) {
             log.error("Error getting stats: {}", e.getMessage());
-            return Map.of("error", e.getMessage());
+            return Map.of(
+                    "totalChunks", 0,
+                    "totalDocuments", 0,
+                    "uniqueSources", 0,
+                    "error", e.getMessage()
+            );
         }
     }
 

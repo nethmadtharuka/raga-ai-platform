@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmbeddingRequest {
+    private String model;  // ADD THIS LINE
     private Content content;
 
     @Data
@@ -30,6 +31,7 @@ public class EmbeddingRequest {
 
     public static EmbeddingRequest fromText(String text) {
         return EmbeddingRequest.builder()
+                .model("models/embedding-001")  // ADD THIS LINE
                 .content(Content.builder()
                         .parts(new Part[]{Part.builder().text(text).build()})
                         .build())
