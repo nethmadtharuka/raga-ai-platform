@@ -56,3 +56,37 @@ Action:
 
 Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
 
+2026-02-04T14:32:07.841+05:30  INFO 23596 --- [main] c.n.a.AiResearchPlatformApplication      : Starting AiResearchPlatformApplication using Java 17.0.16 with PID 23596 (E:\Projects\RAGA\ai-research-platform\ai-research-platform\target\classes started by HP in E:\Projects\RAGA\ai-research-platform\ai-research-platform)
+2026-02-04T14:32:07.848+05:30  INFO 23596 --- [main] c.n.a.AiResearchPlatformApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-02-04T14:32:08.943+05:30  INFO 23596 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-04T14:32:08.986+05:30  INFO 23596 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 23 ms. Found 0 JPA repository interfaces.
+2026-02-04T14:32:09.813+05:30  INFO 23596 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-04T14:32:09.837+05:30  INFO 23596 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-04T14:32:09.838+05:30  INFO 23596 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-04T14:32:09.957+05:30  INFO 23596 --- [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2019 ms
+2026-02-04T14:32:10.229+05:30  INFO 23596 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-04T14:32:10.537+05:30  INFO 23596 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:eff644e1-2479-445c-8438-6c29072bdcb7 user=SA
+2026-02-04T14:32:10.540+05:30  INFO 23596 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-04T14:32:10.602+05:30  INFO 23596 --- [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-04T14:32:10.690+05:30  INFO 23596 --- [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-02-04T14:32:11.630+05:30  INFO 23596 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-04T14:32:11.784+05:30  INFO 23596 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:eff644e1-2479-445c-8438-6c29072bdcb7]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: EFF644E1-2479-445C-8438-6C29072BDCB7/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-04T14:32:12.396+05:30  INFO 23596 --- [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-04T14:32:12.408+05:30  INFO 23596 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-04T14:32:12.837+05:30  INFO 23596 --- [main] c.n.a.service.ChromaDBService            : ChromaDB Service initialized with URL: http://localhost:8000, Tenant: default_tenant, Database: default_database, Collection: research_documents_v2
+2026-02-04T14:32:13.018+05:30  WARN 23596 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-04T14:32:13.061+05:30  INFO 23596 --- [main] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
+2026-02-04T14:32:13.755+05:30  INFO 23596 --- [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-04T14:32:13.769+05:30  INFO 23596 --- [main] c.n.a.AiResearchPlatformApplication      : Started AiResearchPlatformApplication in 6.653 seconds (process running for 7.288)
+2026-02-04T14:32:23.076+05:30  INFO 23596 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
