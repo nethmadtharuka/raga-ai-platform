@@ -26,12 +26,27 @@ public class DocumentController {
 
     /**
      * Add a document from text
+     * FIXED: Changed from Map<String, String> to Map<String, Object> to handle nested metadata
      */
     @PostMapping
-    public ResponseEntity<List<Document>> addDocument(@RequestBody Map<String, String> request) {
-        String title = request.get("title");
-        String content = request.get("content");
-        String source = request.getOrDefault("source", "manual");
+    public ResponseEntity<List<Document>> addDocument(@RequestBody Map<String, Object> request) {
+        String title = (String) request.get("title");
+        String content = (String) request.get("content");
+
+        // Handle metadata - could be String or Map
+        String source = "manual";
+        if (request.containsKey("metadata")) {
+            Object metadataObj = request.get("metadata");
+            if (metadataObj instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> metadata = (Map<String, Object>) metadataObj;
+                source = (String) metadata.getOrDefault("source", "manual");
+            } else if (metadataObj instanceof String) {
+                source = (String) metadataObj;
+            }
+        } else if (request.containsKey("source")) {
+            source = (String) request.get("source");
+        }
 
         if (title == null || content == null) {
             return ResponseEntity.badRequest().build();
@@ -76,10 +91,11 @@ public class DocumentController {
 
     /**
      * Ask a question using RAG
+     * FIXED: Changed from Map<String, String> to Map<String, Object>
      */
     @PostMapping("/ask")
-    public ResponseEntity<RAGService.RAGResponse> askQuestion(@RequestBody Map<String, String> request) {
-        String question = request.get("question");
+    public ResponseEntity<RAGService.RAGResponse> askQuestion(@RequestBody Map<String, Object> request) {
+        String question = (String) request.get("question");
         if (question == null || question.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -96,11 +112,12 @@ public class DocumentController {
 
     /**
      * Get chunking metadata for text
+     * FIXED: Changed from Map<String, String> to Map<String, Object>
      */
     @PostMapping("/chunking-preview")
     public ResponseEntity<ChunkingService.ChunkingMetadata> previewChunking(
-            @RequestBody Map<String, String> request) {
-        String content = request.get("content");
+            @RequestBody Map<String, Object> request) {
+        String content = (String) request.get("content");
         if (content == null) {
             return ResponseEntity.badRequest().build();
         }

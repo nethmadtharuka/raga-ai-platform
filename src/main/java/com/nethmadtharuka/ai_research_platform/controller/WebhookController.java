@@ -59,13 +59,39 @@ public class WebhookController {
         }
     }
 
+    /**
+     * FIXED: Changed from Map<String, String> to Map<String, Object>
+     * This allows the endpoint to accept nested JSON objects like:
+     * {
+     *   "title": "...",
+     *   "content": "...",
+     *   "metadata": {
+     *     "source": "frontend"
+     *   }
+     * }
+     */
     @PostMapping("/add-document")
-    public ResponseEntity<WebhookResponse> addDocumentWebhook(@RequestBody Map<String, String> data) {
-        log.info("Adding document via webhook");
+    public ResponseEntity<WebhookResponse> addDocumentWebhook(@RequestBody Map<String, Object> data) {
+        log.info("Adding document via webhook: {}", data);
 
-        String title = data.get("title");
-        String content = data.get("content");
-        String source = data.getOrDefault("source", "n8n_webhook");
+        // Extract and cast values properly
+        String title = (String) data.get("title");
+        String content = (String) data.get("content");
+
+        // Handle source from either metadata object or direct field
+        String source = "n8n_webhook";
+
+        // Check if metadata exists and is a Map
+        if (data.containsKey("metadata") && data.get("metadata") instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> metadata = (Map<String, Object>) data.get("metadata");
+            if (metadata.containsKey("source")) {
+                source = (String) metadata.get("source");
+            }
+        } else if (data.containsKey("source")) {
+            // Fallback to direct source field
+            source = (String) data.get("source");
+        }
 
         // Validation
         validateTitle(title);
@@ -78,21 +104,34 @@ public class WebhookController {
                 .message("Document added successfully")
                 .result(Map.of(
                         "chunks_created", docs.size(),
-                        "document_ids", docs.stream().map(Document::getId).toList()
+                        "document_ids", docs.stream().map(Document::getId).toList(),
+                        "source", source
                 ))
                 .build());
     }
 
+    /**
+     * FIXED: Changed from Map<String, String> to Map<String, Object>
+     */
     @PostMapping("/research")
-    public ResponseEntity<WebhookResponse> researchWebhook(@RequestBody Map<String, String> data) {
+    public ResponseEntity<WebhookResponse> researchWebhook(@RequestBody Map<String, Object> data) {
         log.info("Research request via webhook");
 
-        String topic = data.get("topic");
+        String topic = (String) data.get("topic");
         validateTopic(topic);
 
         String research = researchService.researchTopic(topic);
 
-        if (Boolean.parseBoolean(data.getOrDefault("save", "false"))) {
+        // Check if save flag is set
+        Object saveObj = data.get("save");
+        boolean shouldSave = false;
+        if (saveObj instanceof Boolean) {
+            shouldSave = (Boolean) saveObj;
+        } else if (saveObj instanceof String) {
+            shouldSave = Boolean.parseBoolean((String) saveObj);
+        }
+
+        if (shouldSave) {
             vectorStoreService.addDocument(
                     "Research: " + topic,
                     research,
@@ -107,11 +146,14 @@ public class WebhookController {
                 .build());
     }
 
+    /**
+     * FIXED: Changed from Map<String, String> to Map<String, Object>
+     */
     @PostMapping("/ask")
-    public ResponseEntity<WebhookResponse> askWebhook(@RequestBody Map<String, String> data) {
+    public ResponseEntity<WebhookResponse> askWebhook(@RequestBody Map<String, Object> data) {
         log.info("Question via webhook");
 
-        String question = data.get("question");
+        String question = (String) data.get("question");
         validateQuestion(question);
 
         RAGService.RAGResponse response = ragService.query(question);
@@ -169,7 +211,7 @@ public class WebhookController {
         }
     }
 
-    // Helper methods (unchanged)
+    // Helper methods for /n8n endpoint
     private Object handleAddDocument(Map<String, Object> data) {
         String title = (String) data.get("title");
         String content = (String) data.get("content");

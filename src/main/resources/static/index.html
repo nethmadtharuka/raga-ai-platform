@@ -186,6 +186,26 @@
         .sources li {
             margin-bottom: 5px;
         }
+
+        .environment-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .environment-indicator.local {
+            color: #2196F3;
+        }
+
+        .environment-indicator.production {
+            color: #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -194,6 +214,8 @@
         <h1>🤖 AI Research Platform</h1>
         <p>Powered by RAG Technology</p>
     </header>
+
+    <div class="environment-indicator" id="envIndicator"></div>
 
     <!-- Add Document Section -->
     <div class="card">
@@ -235,129 +257,192 @@
 </div>
 
 <script>
-    const API_BASE = window.location.origin;
-        // Add Document Handler
-        function handleAddDocument(event) {
-            event.preventDefault();
+    // ============================================
+    // CONFIGURATION - CHANGE THIS FOR PRODUCTION
+    // ============================================
 
-            const btn = document.getElementById('addDocBtn');
-            const loading = document.getElementById('addDocLoading');
-            const response = document.getElementById('addDocResponse');
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
+    // Automatic environment detection
+    const isLocalhost = window.location.hostname === 'localhost' ||
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('192.168');
 
-            // Disable button and show loading
-            btn.disabled = true;
-            loading.className = 'loading show';
-            response.className = 'response';
+    // Set API base URL based on environment
+    const API_BASE = isLocalhost
+        ? 'http://localhost:8080'  // Local development
+        : 'https://your-app.up.railway.app';  // Production - CHANGE THIS to your Railway URL
 
-            fetch(API_BASE + '/api/documents', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: title, content: content, source: 'web_ui' })
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    throw new Error('HTTP error! status: ' + res.status);
+    // API Endpoints - UPDATE THESE to match your backend
+    const ENDPOINTS = {
+        ADD_DOCUMENT: '/api/webhooks/add-document',
+        ASK_QUESTION: '/api/webhooks/ask'  // Fixed: was /api/documents/ask
+    };
+
+    // Display environment indicator
+    const envIndicator = document.getElementById('envIndicator');
+    if (isLocalhost) {
+        envIndicator.textContent = '🔧 Local Development';
+        envIndicator.className = 'environment-indicator local';
+    } else {
+        envIndicator.textContent = '🚀 Production';
+        envIndicator.className = 'environment-indicator production';
+    }
+
+    console.log('✅ JavaScript loaded successfully');
+    console.log('Environment:', isLocalhost ? 'LOCAL' : 'PRODUCTION');
+    console.log('API Base:', API_BASE);
+    console.log('Endpoints:', ENDPOINTS);
+
+    // ============================================
+    // ADD DOCUMENT HANDLER
+    // ============================================
+    function handleAddDocument(event) {
+        event.preventDefault();
+
+        const btn = document.getElementById('addDocBtn');
+        const loading = document.getElementById('addDocLoading');
+        const response = document.getElementById('addDocResponse');
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+
+        console.log('=== ADD DOCUMENT DEBUG ===');
+        console.log('Title:', title);
+        console.log('Content length:', content.length);
+
+        // Disable button and show loading
+        btn.disabled = true;
+        loading.className = 'loading show';
+        response.className = 'response';
+
+        // Correct endpoint
+        fetch(API_BASE + ENDPOINTS.ADD_DOCUMENT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                metadata: {
+                    source: 'web_ui',
+                    timestamp: new Date().toISOString()
                 }
-                return res.json();
             })
-            .then(function(data) {
-                response.className = 'response success show';
-                response.innerHTML = '✅ Document added successfully!<br><small>Chunks created: ' + data.length + '</small>';
-                document.getElementById('addDocForm').reset();
-            })
-            .catch(function(error) {
-                response.className = 'response error show';
-                response.innerHTML = '❌ Error: ' + error.message;
-            })
-            .finally(function() {
-                btn.disabled = false;
-                loading.className = 'loading';
-            });
+        })
+        .then(function(res) {
+            console.log('Add document response status:', res.status);
+            if (!res.ok) {
+                return res.text().then(function(text) {
+                    throw new Error('HTTP ' + res.status + ': ' + text);
+                });
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            console.log('Add document response:', data);
+            response.className = 'response success show';
+            response.innerHTML = '✅ Document added successfully!<br><small>ID: ' + (data.id || data.documentId || 'N/A') + '</small>';
+            document.getElementById('addDocForm').reset();
+        })
+        .catch(function(error) {
+            console.error('Add document error:', error);
+            response.className = 'response error show';
+            response.innerHTML = '❌ Error: ' + error.message;
+        })
+        .finally(function() {
+            btn.disabled = false;
+            loading.className = 'loading';
+            console.log('=== ADD DOCUMENT COMPLETE ===');
+        });
 
-            return false;
-        }
+        return false;
+    }
 
-        // Ask Question Handler - ULTRA SIMPLE VERSION
-        function handleAskQuestion(event) {
-            event.preventDefault();
+    // ============================================
+    // ASK QUESTION HANDLER
+    // ============================================
+    function handleAskQuestion(event) {
+        event.preventDefault();
 
-            const btn = document.getElementById('askBtn');
-            const loading = document.getElementById('askLoading');
-            const response = document.getElementById('askResponse');
-            const question = document.getElementById('question').value;
+        const btn = document.getElementById('askBtn');
+        const loading = document.getElementById('askLoading');
+        const response = document.getElementById('askResponse');
+        const question = document.getElementById('question').value;
 
-            console.log('=== ASK QUESTION DEBUG ===');
-            console.log('Question:', question);
+        console.log('=== ASK QUESTION DEBUG ===');
+        console.log('Question:', question);
 
-            // Disable button and show loading
-            btn.disabled = true;
-            loading.className = 'loading show';
-            response.className = 'response';
-            response.innerHTML = '';
+        // Disable button and show loading
+        btn.disabled = true;
+        loading.className = 'loading show';
+        response.className = 'response';
+        response.innerHTML = '';
 
-            fetch(API_BASE + '/api/documents/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: question })
-            })
-            .then(function(res) {
-                console.log('Response status:', res.status);
-                if (!res.ok) {
-                    throw new Error('HTTP error! status: ' + res.status);
+        fetch(API_BASE + ENDPOINTS.ASK_QUESTION, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question })
+        })
+        .then(function(res) {
+            console.log('Ask response status:', res.status);
+            if (!res.ok) {
+                return res.text().then(function(text) {
+                    throw new Error('HTTP ' + res.status + ': ' + text);
+                });
+            }
+            return res.json();
+        })
+        .then(function(data) {
+            console.log('Ask response data:', data);
+            console.log('Answer field:', data.answer);
+            console.log('Sources field:', data.sourcesUsed);
+
+            // Build HTML
+            let html = '';
+
+            // Add answer
+            if (data.answer) {
+                html += '<div class="answer-box">' + data.answer + '</div>';
+            } else {
+                html += '<div class="answer-box">⚠️ No answer received</div>';
+            }
+
+            // Add sources if available
+            if (data.sourcesUsed && data.sourcesUsed.length > 0) {
+                html += '<div class="sources">';
+                html += '<h4>📚 Sources Used (' + (data.documentsRetrieved || data.sourcesUsed.length) + ' documents):</h4>';
+                html += '<ul>';
+                for (let i = 0; i < data.sourcesUsed.length; i++) {
+                    html += '<li>' + data.sourcesUsed[i] + '</li>';
                 }
-                return res.json();
-            })
-            .then(function(data) {
-                console.log('Response data:', data);
-                console.log('Answer field:', data.answer);
-                console.log('Sources field:', data.sourcesUsed);
+                html += '</ul>';
+                html += '</div>';
+            }
 
-                // Build HTML
-                let html = '';
+            // Display response
+            response.className = 'response success show';
+            response.innerHTML = html;
 
-                // Add answer
-                if (data.answer) {
-                    html += '<div class="answer-box">' + data.answer + '</div>';
-                } else {
-                    html += '<div class="answer-box">⚠️ No answer received</div>';
-                }
+            console.log('Response displayed successfully');
+        })
+        .catch(function(error) {
+            console.error('Ask error:', error);
+            response.className = 'response error show';
+            response.innerHTML = '❌ Error: ' + error.message;
+        })
+        .finally(function() {
+            btn.disabled = false;
+            loading.className = 'loading';
+            console.log('=== ASK QUESTION COMPLETE ===');
+        });
 
-                // Add sources if available
-                if (data.sourcesUsed && data.sourcesUsed.length > 0) {
-                    html += '<div class="sources">';
-                    html += '<h4>📚 Sources Used (' + data.documentsRetrieved + ' documents):</h4>';
-                    html += '<ul>';
-                    for (let i = 0; i < data.sourcesUsed.length; i++) {
-                        html += '<li>' + data.sourcesUsed[i] + '</li>';
-                    }
-                    html += '</ul>';
-                    html += '</div>';
-                }
+        return false;
+    }
 
-                // Display response
-                response.className = 'response success show';
-                response.innerHTML = html;
-
-                console.log('Response displayed successfully');
-            })
-            .catch(function(error) {
-                console.error('Error:', error);
-                response.className = 'response error show';
-                response.innerHTML = '❌ Error: ' + error.message;
-            })
-            .finally(function() {
-                btn.disabled = false;
-                loading.className = 'loading';
-                console.log('=== REQUEST COMPLETE ===');
-            });
-
-            return false;
-        }
-
-        console.log('✅ JavaScript loaded successfully');
-        console.log('API Base:', API_BASE);
+    // ============================================
+    // PAGE LOAD INITIALIZATION
+    // ============================================
+    window.addEventListener('load', function() {
+        console.log('✅ Page fully loaded');
+        console.log('Ready to add documents and ask questions!');
+    });
 </script>
 </body>
 </html>
