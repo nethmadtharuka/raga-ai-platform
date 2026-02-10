@@ -702,3 +702,13 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
 	at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
 
+2026-02-10T08:58:01.866+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.controller.WebhookController       : Adding document via webhook: {title=;,, content=om, metadata={source=web_ui, timestamp=2026-02-10T03:28:01.854Z}}
+2026-02-10T08:58:01.867+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.VectorStoreService         : Adding document: ;, (2 chars)
+2026-02-10T08:58:01.867+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.VectorStoreService         : Document split into 1 chunks
+2026-02-10T08:58:01.867+05:30 DEBUG 18148 --- [http-nio-8080-exec-7] o.s.w.r.f.client.ExchangeFunctions       : [7aafcc2f] HTTP POST https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=AIzaSyDx7VxGxOBicSW6zJyx7qYPbD6d2F_WkVI
+2026-02-10T08:58:02.446+05:30 DEBUG 18148 --- [reactor-http-nio-4] o.s.w.r.f.client.ExchangeFunctions       : [7aafcc2f] [bc431cce-3] Response 200 OK
+2026-02-10T08:58:02.467+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.ChromaDBService            : Adding 1 documents to ChromaDB collection ID: 7774c070-6be2-4611-abc8-5915c578bcdc
+2026-02-10T08:58:02.468+05:30 DEBUG 18148 --- [http-nio-8080-exec-7] o.s.w.r.f.client.ExchangeFunctions       : [2bf21b0] HTTP POST http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections/7774c070-6be2-4611-abc8-5915c578bcdc/add
+2026-02-10T08:58:02.506+05:30 DEBUG 18148 --- [reactor-http-nio-3] o.s.w.r.f.client.ExchangeFunctions       : [2bf21b0] [7afcbd71-5] Response 201 CREATED
+2026-02-10T08:58:02.507+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.ChromaDBService            : Successfully added 1 documents. Response: {}
+2026-02-10T08:58:02.507+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.VectorStoreService         : Added 1 chunks to ChromaDB
