@@ -270,7 +270,7 @@
 
 <script>
     // ============================================
-    // CONFIGURATION - CHANGE THIS FOR PRODUCTION
+    // CONFIGURATION
     // ============================================
 
     // Automatic environment detection
@@ -280,8 +280,8 @@
 
     // Set API base URL based on environment
     const API_BASE = isLocalhost
-        ? 'http://localhost:8080'  // Local development
-        : 'https://raga-ai-platform-production.up.railway.app';  // Production - CHANGE THIS to your Railway URL
+        ? 'http://localhost:8080'
+        : 'https://raga-ai-platform-production.up.railway.app';
 
     // API Endpoints
     const ENDPOINTS = {
@@ -320,12 +320,10 @@
         console.log('Title:', title);
         console.log('Content length:', content.length);
 
-        // Disable button and show loading
         btn.disabled = true;
         loading.className = 'loading show';
         response.className = 'response';
 
-        // Make the request
         fetch(API_BASE + ENDPOINTS.ADD_DOCUMENT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -348,14 +346,13 @@
             return res.json();
         })
         .then(function(data) {
-            console.log('Add document response:', data);
+            console.log('Add document full response:', data);
 
             // Extract result from WebhookResponse wrapper
             const result = data.result || data;
 
             let html = '✅ Document added successfully!';
 
-            // Add metadata if available
             if (result.chunks_created) {
                 html += '<div class="metadata">';
                 html += '📊 Chunks created: ' + result.chunks_created + '<br>';
@@ -384,7 +381,7 @@
     }
 
     // ============================================
-    // ASK QUESTION HANDLER - FIXED VERSION
+    // ASK QUESTION HANDLER - CORRECTED VERSION
     // ============================================
     function handleAskQuestion(event) {
         event.preventDefault();
@@ -397,7 +394,6 @@
         console.log('=== ASK QUESTION DEBUG ===');
         console.log('Question:', question);
 
-        // Disable button and show loading
         btn.disabled = true;
         loading.className = 'loading show';
         response.className = 'response';
@@ -418,15 +414,16 @@
             return res.json();
         })
         .then(function(data) {
+            console.log('=== RESPONSE DEBUG ===');
             console.log('Full response from backend:', data);
 
-            // ✅ FIX: Extract the nested result object from WebhookResponse
+            // ✅ CRITICAL FIX: Extract nested result from WebhookResponse wrapper
             const result = data.result || data;
 
             console.log('Extracted result object:', result);
-            console.log('Answer field:', result.answer);
-            console.log('Sources field:', result.sourcesUsed);
-            console.log('Documents retrieved:', result.documentsRetrieved);
+            console.log('Answer field value:', result.answer);
+            console.log('SourcesUsed field value:', result.sourcesUsed);
+            console.log('DocumentsRetrieved field value:', result.documentsRetrieved);
 
             let html = '';
 
@@ -434,8 +431,8 @@
             if (result.answer) {
                 html += '<div class="answer-box">' + result.answer + '</div>';
             } else {
-                html += '<div class="answer-box">⚠️ No answer received from the AI.</div>';
-                console.warn('No answer in result:', result);
+                html += '<div class="answer-box">⚠️ No answer received from the AI. Check console for details.</div>';
+                console.error('No answer found in result object:', result);
             }
 
             // Build sources section if available
@@ -478,7 +475,7 @@
     }
 
     // ============================================
-    // PAGE LOAD INITIALIZATION
+    // PAGE LOAD
     // ============================================
     window.addEventListener('load', function() {
         console.log('✅ Page fully loaded');
