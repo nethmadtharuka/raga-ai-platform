@@ -712,3 +712,8 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2026-02-10T08:58:02.506+05:30 DEBUG 18148 --- [reactor-http-nio-3] o.s.w.r.f.client.ExchangeFunctions       : [2bf21b0] [7afcbd71-5] Response 201 CREATED
 2026-02-10T08:58:02.507+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.ChromaDBService            : Successfully added 1 documents. Response: {}
 2026-02-10T08:58:02.507+05:30  INFO 18148 --- [http-nio-8080-exec-7] c.n.a.service.VectorStoreService         : Added 1 chunks to ChromaDB
+2026-02-10T10:26:10.176+05:30  INFO 18148 --- [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-10T10:26:10.433+05:30  INFO 18148 --- [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-10T10:26:12.584+05:30  INFO 18148 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-10T10:26:12.608+05:30  INFO 18148 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-10T10:26:12.618+05:30  INFO 18148 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

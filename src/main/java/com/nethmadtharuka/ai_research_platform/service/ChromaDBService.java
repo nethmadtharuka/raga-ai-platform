@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;  // ✅ ADDED
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +34,11 @@ public class ChromaDBService {
             @Value("${chroma.url}") String chromaUrl,
             @Value("${chroma.collection.name}") String collectionName) {
         this.webClient = webClient;
-        this.chromaUrl = chromaUrl;
+        // ✅ Trim to remove any accidental spaces or newlines
+        this.chromaUrl = chromaUrl.trim();
         this.collectionName = collectionName;
         log.info("ChromaDB Service initialized with URL: {}, Tenant: {}, Database: {}, Collection: {}",
-                chromaUrl, tenant, database, collectionName);
+                this.chromaUrl, tenant, database, collectionName);
     }
 
     private String getBaseCollectionUrl() {
@@ -53,11 +55,12 @@ public class ChromaDBService {
     private void initializeCollection() {
         try {
             log.info("Initializing collection: {}", collectionName);
+            log.info("Using ChromaDB URL: {}", getBaseCollectionUrl()); // ✅ Log the full URL for debugging
 
             // Try to get existing collection first
             try {
                 List<Map> collections = webClient.get()
-                        .uri(getBaseCollectionUrl())
+                        .uri(URI.create(getBaseCollectionUrl()))  // ✅ FIXED: use URI.create()
                         .retrieve()
                         .bodyToMono(List.class)
                         .block(Duration.ofSeconds(10));
@@ -85,7 +88,7 @@ public class ChromaDBService {
             );
 
             Map response = webClient.post()
-                    .uri(getBaseCollectionUrl())
+                    .uri(URI.create(getBaseCollectionUrl()))  // ✅ FIXED: use URI.create()
                     .bodyValue(body)
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -133,7 +136,7 @@ public class ChromaDBService {
             log.debug("POST to: {}", url);
 
             Map response = webClient.post()
-                    .uri(url)
+                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
                     .bodyValue(chromaDoc)
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -169,7 +172,7 @@ public class ChromaDBService {
             String url = getBaseCollectionUrl() + "/" + collectionId + "/query";
 
             ChromaQueryResponse response = webClient.post()
-                    .uri(url)
+                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(ChromaQueryResponse.class)
@@ -190,7 +193,6 @@ public class ChromaDBService {
         }
     }
 
-    // ✅ FIXED METHOD - This is the corrected version
     public Map<String, Object> getCollectionStats() {
         ensureInitialized();
 
@@ -199,20 +201,20 @@ public class ChromaDBService {
         }
 
         try {
-            // Get collection count - ChromaDB returns a simple INTEGER, not a Map!
+            String url = getBaseCollectionUrl() + "/" + collectionId + "/count";
+
             Integer count = webClient.get()
-                    .uri(getBaseCollectionUrl() + "/" + collectionId + "/count")
+                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
                     .retrieve()
-                    .bodyToMono(Integer.class)  // ✅ Changed from Map.class to Integer.class
+                    .bodyToMono(Integer.class)
                     .block(Duration.ofSeconds(10));
 
             log.info("Collection count: {}", count);
 
-            // Build the stats response
             Map<String, Object> stats = new HashMap<>();
             stats.put("totalChunks", count != null ? count : 0);
-            stats.put("totalDocuments", count != null ? (count / 3) : 0); // Rough estimate
-            stats.put("uniqueSources", 0); // Can be enhanced later
+            stats.put("totalDocuments", count != null ? (count / 3) : 0);
+            stats.put("uniqueSources", 0);
             stats.put("collectionId", collectionId);
             stats.put("collectionName", collectionName);
 
@@ -236,8 +238,10 @@ public class ChromaDBService {
         }
 
         try {
+            String url = getBaseCollectionUrl() + "/" + collectionId;
+
             webClient.delete()
-                    .uri(getBaseCollectionUrl() + "/" + collectionId)
+                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
                     .retrieve()
                     .bodyToMono(String.class)
                     .block(Duration.ofSeconds(10));
