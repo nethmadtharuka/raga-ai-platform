@@ -164,6 +164,8 @@
             margin-bottom: 15px;
             line-height: 1.6;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .sources {
@@ -197,6 +199,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
 
         .environment-indicator.local {
@@ -205,6 +208,15 @@
 
         .environment-indicator.production {
             color: #4CAF50;
+        }
+
+        .metadata {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #555;
         }
     </style>
 </head>
@@ -271,10 +283,10 @@
         ? 'http://localhost:8080'  // Local development
         : 'https://raga-ai-platform-production.up.railway.app';  // Production - CHANGE THIS to your Railway URL
 
-    // API Endpoints - UPDATE THESE to match your backend
+    // API Endpoints
     const ENDPOINTS = {
         ADD_DOCUMENT: '/api/webhooks/add-document',
-        ASK_QUESTION: '/api/webhooks/ask'  // Fixed: was /api/documents/ask
+        ASK_QUESTION: '/api/webhooks/ask'
     };
 
     // Display environment indicator
@@ -313,7 +325,7 @@
         loading.className = 'loading show';
         response.className = 'response';
 
-        // Correct endpoint
+        // Make the request
         fetch(API_BASE + ENDPOINTS.ADD_DOCUMENT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -337,8 +349,24 @@
         })
         .then(function(data) {
             console.log('Add document response:', data);
+
+            // Extract result from WebhookResponse wrapper
+            const result = data.result || data;
+
+            let html = '✅ Document added successfully!';
+
+            // Add metadata if available
+            if (result.chunks_created) {
+                html += '<div class="metadata">';
+                html += '📊 Chunks created: ' + result.chunks_created + '<br>';
+                if (result.source) {
+                    html += '📁 Source: ' + result.source;
+                }
+                html += '</div>';
+            }
+
             response.className = 'response success show';
-            response.innerHTML = '✅ Document added successfully!<br><small>ID: ' + (data.id || data.documentId || 'N/A') + '</small>';
+            response.innerHTML = html;
             document.getElementById('addDocForm').reset();
         })
         .catch(function(error) {
@@ -356,7 +384,7 @@
     }
 
     // ============================================
-    // ASK QUESTION HANDLER
+    // ASK QUESTION HANDLER - FIXED VERSION
     // ============================================
     function handleAskQuestion(event) {
         event.preventDefault();
@@ -390,40 +418,53 @@
             return res.json();
         })
         .then(function(data) {
-            console.log('Ask response data:', data);
-            console.log('Answer field:', data.answer);
-            console.log('Sources field:', data.sourcesUsed);
+            console.log('Full response from backend:', data);
 
-            // Build HTML
+            // ✅ FIX: Extract the nested result object from WebhookResponse
+            const result = data.result || data;
+
+            console.log('Extracted result object:', result);
+            console.log('Answer field:', result.answer);
+            console.log('Sources field:', result.sourcesUsed);
+            console.log('Documents retrieved:', result.documentsRetrieved);
+
             let html = '';
 
-            // Add answer
-            if (data.answer) {
-                html += '<div class="answer-box">' + data.answer + '</div>';
+            // Build answer section
+            if (result.answer) {
+                html += '<div class="answer-box">' + result.answer + '</div>';
             } else {
-                html += '<div class="answer-box">⚠️ No answer received</div>';
+                html += '<div class="answer-box">⚠️ No answer received from the AI.</div>';
+                console.warn('No answer in result:', result);
             }
 
-            // Add sources if available
-            if (data.sourcesUsed && data.sourcesUsed.length > 0) {
+            // Build sources section if available
+            if (result.sourcesUsed && result.sourcesUsed.length > 0) {
                 html += '<div class="sources">';
-                html += '<h4>📚 Sources Used (' + (data.documentsRetrieved || data.sourcesUsed.length) + ' documents):</h4>';
+                html += '<h4>📚 Sources Used (' + (result.documentsRetrieved || result.sourcesUsed.length) + ' documents):</h4>';
                 html += '<ul>';
-                for (let i = 0; i < data.sourcesUsed.length; i++) {
-                    html += '<li>' + data.sourcesUsed[i] + '</li>';
+                for (let i = 0; i < result.sourcesUsed.length; i++) {
+                    html += '<li>' + result.sourcesUsed[i] + '</li>';
                 }
                 html += '</ul>';
                 html += '</div>';
             }
 
-            // Display response
+            // Show metadata if available
+            if (result.documentsRetrieved !== undefined) {
+                html += '<div class="metadata">';
+                html += '🔍 Documents retrieved: ' + result.documentsRetrieved;
+                html += '</div>';
+            }
+
+            // Display the response
             response.className = 'response success show';
             response.innerHTML = html;
 
-            console.log('Response displayed successfully');
+            console.log('✅ Response displayed successfully');
         })
         .catch(function(error) {
-            console.error('Ask error:', error);
+            console.error('Ask question error:', error);
             response.className = 'response error show';
             response.innerHTML = '❌ Error: ' + error.message;
         })
