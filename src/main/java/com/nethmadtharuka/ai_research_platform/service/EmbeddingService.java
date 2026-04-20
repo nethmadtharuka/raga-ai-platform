@@ -30,7 +30,6 @@ public class EmbeddingService {
 
     /**
      * Generate embedding vector for given text
-     * Returns a list of doubles representing the semantic meaning
      */
     public List<Double> generateEmbedding(String text) {
         log.debug("Generating embedding for text: {}...",
@@ -39,20 +38,21 @@ public class EmbeddingService {
         EmbeddingRequest request = EmbeddingRequest.fromText(text);
 
         try {
-            log.debug("Calling Gemini API: {}", embeddingUrl);
+            log.debug("Calling Gemini embedding API: {}", embeddingUrl);
 
             EmbeddingResponse response = webClient.post()
-                    .uri(embeddingUrl + "?key=" + apiKey)
+                    .uri(embeddingUrl)
                     .header("Content-Type", "application/json")
+                    .header("x-goog-api-key", apiKey)
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(EmbeddingResponse.class)
-                    .timeout(Duration.ofSeconds(60))  // Increased timeout
+                    .timeout(Duration.ofSeconds(60))
                     .block();
 
             if (response == null || response.getValues() == null) {
-                log.error("Received null response from Gemini API");
-                throw new RuntimeException("Null response from embedding service");
+                log.error("Received null response from Gemini embedding API");
+                throw new IllegalStateException("Null response from embedding service");
             }
 
             List<Double> values = response.getValues();
@@ -60,18 +60,17 @@ public class EmbeddingService {
             return values;
 
         } catch (WebClientResponseException e) {
-            log.error("Gemini API error: Status={}, Body={}",
+            log.error("Gemini embedding API error: Status={}, Body={}",
                     e.getStatusCode(), e.getResponseBodyAsString());
-            throw new RuntimeException("Gemini API error: " + e.getMessage(), e);
+            throw new IllegalStateException("Gemini embedding API error: " + e.getMessage(), e);
         } catch (Exception e) {
             log.error("Error generating embedding: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to generate embedding: " + e.getMessage(), e);
+            throw new IllegalStateException("Failed to generate embedding: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Calculate cosine similarity between two vectors
-     * Returns value between -1 and 1 (1 = identical, 0 = unrelated, -1 = opposite)
+     * Cosine similarity between two vectors (-1 to 1).
      */
     public double cosineSimilarity(List<Double> vec1, List<Double> vec2) {
         if (vec1.size() != vec2.size()) {

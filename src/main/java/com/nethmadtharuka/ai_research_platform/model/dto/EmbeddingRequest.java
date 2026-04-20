@@ -31,7 +31,7 @@ public class EmbeddingRequest {
 
     public static EmbeddingRequest fromText(String text) {
         return EmbeddingRequest.builder()
-                .model("models/embedding-001")  // ADD THIS LINE
+                .model("models/gemini-embedding-001")
                 .content(Content.builder()
                         .parts(new Part[]{Part.builder().text(text).build()})
                         .build())

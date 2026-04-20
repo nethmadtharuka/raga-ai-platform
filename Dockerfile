@@ -37,6 +37,8 @@ USER spring:spring
 # Expose port
 EXPOSE 8080
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:8080/api/health || exit 1
 
 # Run the application
 ENTRYPOINT ["java", \

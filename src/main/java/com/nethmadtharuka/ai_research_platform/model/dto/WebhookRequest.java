@@ -1,5 +1,6 @@
 package com.nethmadtharuka.ai_research_platform.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class WebhookRequest {
     private String workflowId;
+
+    @NotBlank(message = "Action is required")
     private String action;
+
     private Map<String, Object> data;
 }

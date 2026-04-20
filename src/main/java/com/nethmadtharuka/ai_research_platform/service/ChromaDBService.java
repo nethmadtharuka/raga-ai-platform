@@ -5,13 +5,10 @@ import com.nethmadtharuka.ai_research_platform.model.dto.ChromaQueryRequest;
 import com.nethmadtharuka.ai_research_platform.model.dto.ChromaQueryResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
-
-import java.net.URI;  // ✅ ADDED
+import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +23,9 @@ public class ChromaDBService {
     private final String collectionName;
     private final String tenant = "default_tenant";
     private final String database = "default_database";
-    private boolean initialized = false;
-    private String collectionId = null;
+    private final Object initLock = new Object();
+    private volatile boolean initialized = false;
+    private volatile String collectionId = null;
 
     public ChromaDBService(
             WebClient webClient,
@@ -37,7 +35,7 @@ public class ChromaDBService {
         // ✅ Trim to remove any accidental spaces or newlines
         this.chromaUrl = chromaUrl.trim();
         this.collectionName = collectionName;
-        log.info("ChromaDB Service initialized with URL: {}, Tenant: {}, Database: {}, Collection: {}",
+        log.info("ChromaDB Service configured: url={}, tenant={}, database={}, collection={}",
                 this.chromaUrl, tenant, database, collectionName);
     }
 
@@ -47,20 +45,23 @@ public class ChromaDBService {
 
     private void ensureInitialized() {
         if (!initialized) {
-            initializeCollection();
-            initialized = true;
+            synchronized (initLock) {
+                if (!initialized) {
+                    initializeCollection();
+                    initialized = true;
+                }
+            }
         }
     }
 
     private void initializeCollection() {
         try {
             log.info("Initializing collection: {}", collectionName);
-            log.info("Using ChromaDB URL: {}", getBaseCollectionUrl()); // ✅ Log the full URL for debugging
+            log.debug("ChromaDB collections URL: {}", getBaseCollectionUrl());
 
-            // Try to get existing collection first
             try {
                 List<Map> collections = webClient.get()
-                        .uri(URI.create(getBaseCollectionUrl()))  // ✅ FIXED: use URI.create()
+                        .uri(URI.create(getBaseCollectionUrl()))
                         .retrieve()
                         .bodyToMono(List.class)
                         .block(Duration.ofSeconds(10));
@@ -88,7 +89,7 @@ public class ChromaDBService {
             );
 
             Map response = webClient.post()
-                    .uri(URI.create(getBaseCollectionUrl()))  // ✅ FIXED: use URI.create()
+                    .uri(URI.create(getBaseCollectionUrl()))
                     .bodyValue(body)
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -136,7 +137,7 @@ public class ChromaDBService {
             log.debug("POST to: {}", url);
 
             Map response = webClient.post()
-                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
+                    .uri(URI.create(url))
                     .bodyValue(chromaDoc)
                     .retrieve()
                     .bodyToMono(Map.class)
@@ -172,7 +173,7 @@ public class ChromaDBService {
             String url = getBaseCollectionUrl() + "/" + collectionId + "/query";
 
             ChromaQueryResponse response = webClient.post()
-                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
+                    .uri(URI.create(url))
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(ChromaQueryResponse.class)
@@ -204,7 +205,7 @@ public class ChromaDBService {
             String url = getBaseCollectionUrl() + "/" + collectionId + "/count";
 
             Integer count = webClient.get()
-                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
+                    .uri(URI.create(url))
                     .retrieve()
                     .bodyToMono(Integer.class)
                     .block(Duration.ofSeconds(10));
@@ -212,9 +213,9 @@ public class ChromaDBService {
             log.info("Collection count: {}", count);
 
             Map<String, Object> stats = new HashMap<>();
-            stats.put("totalChunks", count != null ? count : 0);
-            stats.put("totalDocuments", count != null ? (count / 3) : 0);
-            stats.put("uniqueSources", 0);
+            int chunks = count != null ? count : 0;
+            stats.put("totalChunks", chunks);
+            stats.put("note", "totalChunks counts stored vectors (chunks), not logical documents");
             stats.put("collectionId", collectionId);
             stats.put("collectionName", collectionName);
 
@@ -224,8 +225,6 @@ public class ChromaDBService {
             log.error("Error getting stats: {}", e.getMessage());
             return Map.of(
                     "totalChunks", 0,
-                    "totalDocuments", 0,
-                    "uniqueSources", 0,
                     "error", e.getMessage()
             );
         }
@@ -241,7 +240,7 @@ public class ChromaDBService {
             String url = getBaseCollectionUrl() + "/" + collectionId;
 
             webClient.delete()
-                    .uri(URI.create(url))  // ✅ FIXED: use URI.create()
+                    .uri(URI.create(url))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block(Duration.ofSeconds(10));

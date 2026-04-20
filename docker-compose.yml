@@ -9,8 +9,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - APP_API_KEY=${APP_API_KEY}
+      - WEBHOOK_API_KEY=${WEBHOOK_API_KEY:-}
       - CHROMA_URL=http://chromadb:8000
       - SERVER_PORT=8080
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - ai-platform
     restart: unless-stopped
