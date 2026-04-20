@@ -4,6 +4,12 @@ import './App.css'
 
 type WebhookSuccess<T> = { success: boolean; result?: T; message?: string }
 
+type RagWebhookResult = {
+  answer?: string
+  sourcesUsed?: string[]
+  documentsRetrieved?: number
+}
+
 export default function App() {
   const [addLoading, setAddLoading] = useState(false)
   const [askLoading, setAskLoading] = useState(false)
@@ -72,12 +78,9 @@ export default function App() {
         setAskMessage({ type: 'err', text: text || res.statusText })
         return
       }
-      const data = JSON.parse(text) as WebhookSuccess<{
-        answer?: string
-        sourcesUsed?: string[]
-        documentsRetrieved?: number
-      }>
-      const result = data.result ?? (data as unknown as { answer?: string })
+      const data = JSON.parse(text) as WebhookSuccess<RagWebhookResult>
+      const result: RagWebhookResult | undefined =
+        data.result ?? (data as unknown as RagWebhookResult)
       const answer = result?.answer ?? ''
       if (answerRef.current) {
         answerRef.current.textContent = answer || 'No answer returned.'
