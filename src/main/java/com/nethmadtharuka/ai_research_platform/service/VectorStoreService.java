@@ -19,6 +19,13 @@ public class VectorStoreService {
     private final ChromaDBService chromaDBService;
     private final ChunkingService chunkingService;
 
+    /** Bumped whenever documents are added, so cached answers never outlive the data they came from. */
+    private final java.util.concurrent.atomic.AtomicLong version = new java.util.concurrent.atomic.AtomicLong();
+
+    public long getVersion() {
+        return version.get();
+    }
+
     /**
      * Add a document with automatic chunking
      */
@@ -70,6 +77,7 @@ public class VectorStoreService {
 
         // Step 3: Add to ChromaDB
         chromaDBService.addDocuments(ids, documents, embeddings, metadatas);
+        version.incrementAndGet();
 
         log.info("Added {} chunks to ChromaDB", chunks.size());
         return savedDocs;
@@ -82,7 +90,7 @@ public class VectorStoreService {
         log.info("Searching for: {}", query);
 
         // Generate embedding for query
-        List<Double> queryEmbedding = embeddingService.generateEmbedding(query);
+        List<Double> queryEmbedding = embeddingService.embedQuery(query);
 
         // Query ChromaDB
         ChromaQueryResponse response = chromaDBService.query(queryEmbedding, topK);

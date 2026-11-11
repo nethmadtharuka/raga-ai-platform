@@ -66,6 +66,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded", e.getMessage(), e);
     }
 
+    @ExceptionHandler(AiServiceUnavailableException.class)
+    public ResponseEntity<Map<String, Object>> handleAiUnavailable(AiServiceUnavailableException e) {
+        log.error("AI service unavailable: {}", e.getMessage());
+        return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "External service error",
+                "The answering service is unavailable. Please try again later.", e);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException e) {
         log.error("Resource not found: {}", e.getMessage());
