@@ -1,0 +1,82 @@
+/* RAGMe! design tokens, copied from docs/design/raga-prototype.html. Components use these, never raw colours. */
+:root {
+  /* brand */
+  --b-violet: #5B3CFF;
+  --b-violet-d: #3A1FD1;
+  --b-lime: #B9FA3C;
+  --b-navy: #04045E;
+  --b-pink: #FF7BC8;
+  --b-ink: #0A0A14;
+
+  /* fixed colours the prototype uses on brand surfaces (same in both themes) */
+  --white: #FFFFFF;
+  --on-lime: #10130A;
+  --on-pink: #1A0A14;
+  --band-dark: #0C0C12;
+  --foot-bg: #08080D;
+  --mock-bg: #1A1A26;
+  --mock-line: #2C2C40;
+  --mock-panel: #0E0E18;
+  --mock-item: #1A1A28;
+  --mock-chip: #222234;
+  --toast-bg: #0A0A14;
+  --scrim: rgba(5, 5, 20, .55);
+  --glass: rgba(255, 255, 255, .22);
+  --glass-line: rgba(255, 255, 255, .35);
+  --glass-hover: rgba(255, 255, 255, .14);
+  --shade: rgba(0, 0, 0, .1);
+  --shade-2: rgba(0, 0, 0, .14);
+
+  /* file-type badges */
+  --ft-pdf-bg: #FFD9DC; --ft-pdf: #8A1520;
+  --ft-docx-bg: #D9E5FF; --ft-docx: #173B9A;
+  --ft-sheet-bg: #D8F5E2; --ft-sheet: #136638;
+  --ft-text-bg: #ECECF4; --ft-text: #40405A;
+  --ft-web-bg: #FFE8CC; --ft-web: #8A4A00;
+  --ft-json-bg: #EEE0FF; --ft-json: #5A2AB0;
+
+  /* mascot palette (light, mid, shade) */
+  --m-violet-1: #9F90FF; --m-violet-2: #5B3CFF; --m-violet-3: #2C16B4;
+  --m-lime-1: #E6FF92; --m-lime-2: #B9FA3C; --m-lime-3: #78B200;
+  --m-pink-1: #FFC0E5; --m-pink-2: #FF7BC8; --m-pink-3: #D13F9F;
+  --m-blue-1: #86ABFF; --m-blue-2: #2F5BFF; --m-blue-3: #1431B5;
+  --m-face: #12122B;
+
+  /* light theme */
+  --bg: #F2F2F9;
+  --surface: #FFFFFF;
+  --surface-2: #EAEAF5;
+  --ink: #0B0B22;
+  --ink-2: #575772;
+  --line: #DEDEEC;
+  --accent: #4B2FE8;
+  --accent-soft: #E6E0FF;
+  --ok: #137A40; --ok-soft: #DCF4E6;
+  --warn: #9A5B00; --warn-soft: #FFEBC7;
+  --bad: #C72A34; --bad-soft: #FFE0E2;
+  --em-on-light: var(--b-violet);
+  --app-logo: var(--accent);
+
+  --f-display: 'Anton', 'Impact', sans-serif;
+  --f-body: 'Inter', system-ui, sans-serif;
+  --f-serif: 'Instrument Serif', Georgia, serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0A10; --surface: #14141D; --surface-2: #1F1F2C; --ink: #F4F4FB; --ink-2: #A8A8C2; --line: #2C2C3E;
+    --accent: #A092FF; --accent-soft: #2A2458;
+    --ok: #5EE394; --ok-soft: #10301F; --warn: #FFB547; --warn-soft: #3A2A0A; --bad: #FF7079; --bad-soft: #3C1519;
+    --em-on-light: var(--b-lime); --app-logo: var(--b-lime);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0A0A10; --surface: #14141D; --surface-2: #1F1F2C; --ink: #F4F4FB; --ink-2: #A8A8C2; --line: #2C2C3E;
+  --accent: #A092FF; --accent-soft: #2A2458;
+  --ok: #5EE394; --ok-soft: #10301F; --warn: #FFB547; --warn-soft: #3A2A0A; --bad: #FF7079; --bad-soft: #3C1519;
+  --em-on-light: var(--b-lime); --app-logo: var(--b-lime);
+  color-scheme: dark;
+}

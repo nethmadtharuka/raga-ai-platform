@@ -5,10 +5,15 @@ services:
       dockerfile: Dockerfile
     container_name: ai-research-backend
     ports:
-      - "8080:8080"
+      # Host port 8090 by default (8080 is often taken locally); inside the network it stays 8080.
+      - "${RAGA_PORT:-8090}:8080"
+    depends_on:
+      - chromadb
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-flash-latest}
+      - GEMINI_FALLBACK_MODEL=${GEMINI_FALLBACK_MODEL:-gemini-flash-lite-latest}
       - APP_API_KEY=${APP_API_KEY}
       - WEBHOOK_API_KEY=${WEBHOOK_API_KEY:-}
       - CHROMA_URL=http://chromadb:8000

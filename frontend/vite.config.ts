@@ -8,9 +8,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    // The click sounds live in the project's root sounds/ folder.
+    fs: { allow: ['.', '../sounds'] },
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        // Local backend from scripts/dev-backend.ps1 (or Docker on RAGA_PORT). Override with RAGA_API_TARGET.
+        target: process.env.RAGA_API_TARGET ?? 'http://localhost:8090',
         changeOrigin: true,
       },
     },

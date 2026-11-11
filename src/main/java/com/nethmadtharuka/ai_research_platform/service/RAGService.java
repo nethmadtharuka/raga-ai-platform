@@ -16,6 +16,9 @@ public class RAGService {
     private final VectorStoreService vectorStoreService;
     private final GeminiService geminiService;
 
+    /** Same question against an unchanged document set returns the cached answer (saves free-tier quota). */
+    private final LruCache<String, RAGResponse> answers = new LruCache<>(100);
+
     /**
      * Answer a question using RAG
      * 1. Find relevant documents
@@ -24,6 +27,12 @@ public class RAGService {
      */
     public RAGResponse query(String question) {
         log.info("RAG Query: {}", question);
+        String cacheKey = vectorStoreService.getVersion() + "|" + question.trim().toLowerCase();
+        RAGResponse cached = answers.get(cacheKey);
+        if (cached != null) {
+            log.info("RAG answer served from cache");
+            return cached;
+        }
 
         // Step 1: Retrieve relevant documents
         List<Document> relevantDocs = vectorStoreService.searchSimilar(question, 3);
@@ -61,11 +70,13 @@ public class RAGService {
                 .map(Document::getTitle)
                 .collect(Collectors.toList());
 
-        return RAGResponse.builder()
+        RAGResponse result = RAGResponse.builder()
                 .answer(answer)
                 .sourcesUsed(sources)
                 .documentsRetrieved(relevantDocs.size())
                 .build();
+        answers.put(cacheKey, result);
+        return result;
     }
 
     @lombok.Data
