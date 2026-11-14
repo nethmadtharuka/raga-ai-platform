@@ -15,7 +15,10 @@ const paras = (t: string) =>
 export function SourceViewer({ nb, view, onClose }: { nb: Notebook; view: View; onClose: () => void }) {
   const s = nb.sources.find((x) => x.id === view.sourceId)
   const hl = useRef<HTMLParagraphElement>(null)
-  useEffect(() => hl.current?.scrollIntoView?.({ block: 'center' }), [])
+  useEffect(() => {
+    // Braces matter: newer browsers return a Promise from scrollIntoView, and an effect must not return one.
+    hl.current?.scrollIntoView?.({ block: 'center' })
+  }, [])
 
   const passage = view.passage?.trim()
   const text = s?.text ?? ''

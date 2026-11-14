@@ -37,7 +37,8 @@ services:
       - IS_PERSISTENT=TRUE
       - ANONYMIZED_TELEMETRY=FALSE
     volumes:
-      - chroma-data:/chroma/chroma
+      # Current chromadb/chroma images persist to /data (older 0.x images used /chroma/chroma).
+      - chroma-data:/data
     networks:
       - ai-platform
     restart: unless-stopped
