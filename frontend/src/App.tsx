@@ -1,5 +1,6 @@
 import { AnimatePresence, m } from 'motion/react'
 import { AppTop, useHash } from './components/Chrome'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { ToastProvider } from './components/Toast'
 import { MotionProvider } from './lib/motion'
 import { Landing } from './pages/Landing'
@@ -24,7 +25,9 @@ function Routes() {
       {route !== 'home' && <AppTop active />}
       <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
         <m.div key={nb ? nb.id : route} {...page}>
-          {route === 'home' ? <Landing /> : <main>{nb ? <Workspace nb={nb} /> : <Notebooks />}</main>}
+          <ErrorBoundary resetKey={hash}>
+            {route === 'home' ? <Landing /> : <main>{nb ? <Workspace nb={nb} /> : <Notebooks />}</main>}
+          </ErrorBoundary>
         </m.div>
       </AnimatePresence>
     </>
@@ -33,12 +36,14 @@ function Routes() {
 
 export default function App() {
   return (
-    <MotionProvider>
-      <ToastProvider>
-        <StoreProvider>
-          <Routes />
-        </StoreProvider>
-      </ToastProvider>
-    </MotionProvider>
+    <ErrorBoundary>
+      <MotionProvider>
+        <ToastProvider>
+          <StoreProvider>
+            <Routes />
+          </StoreProvider>
+        </ToastProvider>
+      </MotionProvider>
+    </ErrorBoundary>
   )
 }
